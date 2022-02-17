@@ -129,8 +129,8 @@
 
         <!--            TESTING         -->
         <junit.version>5.8.2</junit.version>
-        <testng.version>7.5</testng.version>
-        <commons-lang.version>2.6</commons-lang.version>
+        <testng.version>7.3.0</testng.version>
+        <commons-lang.version>3.11</commons-lang.version>
     </properties>
 
     <scm>
@@ -176,8 +176,8 @@
                 <version>${testng.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
             </dependency>
         </dependencies>
