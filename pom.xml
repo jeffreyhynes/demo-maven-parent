@@ -5,7 +5,7 @@
 
     <groupId>com.howtodoinjava.demo</groupId>
     <artifactId>the-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <packaging>pom</packaging>
 
@@ -127,8 +127,8 @@
 
         <!--            TESTING         -->
         <junit.version>5.8.2</junit.version>
-        <testng.version>7.3.0</testng.version>
-        <commons-lang.version>3.11</commons-lang.version>
+        <testng.version>7.5</testng.version>
+        <commons-lang.version>3.12.0</commons-lang.version>
     </properties>
 
     <scm>
