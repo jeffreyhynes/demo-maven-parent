@@ -5,7 +5,7 @@
 
     <groupId>com.howtodoinjava.demo</groupId>
     <artifactId>the-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.2</version>
 
     <packaging>pom</packaging>
 
@@ -49,8 +49,6 @@
     </contributors>
 
     <properties>
-        <versionName>${project.version}</versionName>
-
         <!-- Project Details    -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -356,6 +354,10 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
                 <configuration>
+                    <format>{0,number}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                     <providerImplementations>
@@ -364,6 +366,15 @@
                     <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
                     <revisionOnScmFailure>UNKNOWN</revisionOnScmFailure>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
@@ -371,8 +382,6 @@
                         <version>${maven-scm-provider-jgit.version}</version>
                     </dependency>
                 </dependencies>
-
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -755,19 +764,6 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>versions-maven-plugin</artifactId>
-
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>set</goal>
-                                </goals>
-                                <phase>validate</phase>
-                                <configuration>
-                                    <newVersion>${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0
-                                    </newVersion>
-                                </configuration>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>
