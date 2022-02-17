@@ -1,5 +1,21 @@
+# IntelliJ
+/.idea/*
+!/.idea/runConfigurations/*
+!/.idea/scopes/schemas.xml
+*.iml
+
+# OS X
+**/.DS_Store
+
+# maven
+target/
+
 # Compiled class file
 *.class
+*.gdsl
+
+#sonar metrics
+.scannerwork/
 
 # Log file
 *.log
