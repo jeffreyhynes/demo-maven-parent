@@ -49,6 +49,8 @@
     </contributors>
 
     <properties>
+        <versionName>${project.version}</versionName>
+
         <!-- Project Details    -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -100,6 +102,7 @@
         <maven-release-plugin.version>3.0.0-M5</maven-release-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <maven-scm-plugin.version>2.0.0-M1</maven-scm-plugin.version>
+
         <maven-scm-provider-jgit.version>2.0.0-M1</maven-scm-provider-jgit.version>
         <maven-site-plugin.version>3.10.0</maven-site-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -114,6 +117,8 @@
         <apache-resources.version>1.0.6</apache-resources.version>
         <codehaus-buildnumber-maven-plugin.version>3.0.0</codehaus-buildnumber-maven-plugin.version>
         <checksum-maven-plugin.version>1.11</checksum-maven-plugin.version>
+        <build-helper-maven-plugin.version>3.3.0</build-helper-maven-plugin.version>
+
         <!--            LOMBOK            -->
         <lombok.version>1.18.22</lombok.version>
 
@@ -124,7 +129,7 @@
 
         <!--            TESTING         -->
         <junit.version>5.8.2</junit.version>
-        <testng.version>7.5</testng.version>
+        <testng.version>7.3.0</testng.version>
         <commons-lang.version>2.6</commons-lang.version>
     </properties>
 
@@ -207,6 +212,16 @@
 
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <!-- Filter for version name in properties -->
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>app.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -328,6 +343,11 @@
                     <artifactId>buildnumber-maven-plugin</artifactId>
                     <version>${codehaus-buildnumber-maven-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
             </plugins>
 
         </pluginManagement>
@@ -351,6 +371,8 @@
                         <version>${maven-scm-provider-jgit.version}</version>
                     </dependency>
                 </dependencies>
+
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -515,6 +537,11 @@
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-api</artifactId>
+                        <version>${maven-scm-plugin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
                         <artifactId>maven-scm-provider-jgit</artifactId>
                         <version>${maven-scm-provider-jgit.version}</version>
                     </dependency>
@@ -527,6 +554,7 @@
                     <providerImplementations>
                         <git>jgit</git>
                     </providerImplementations>
+                    <connectionType>connection</connectionType>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -557,6 +585,18 @@
                         <id>attach-descriptor</id>
                         <goals>
                             <goal>attach-descriptor</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -669,6 +709,92 @@
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bump-patch</id>
+            <activation>
+                <property>
+                    <name>bumpPatch</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <newVersion>
+                                        ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion}
+                                    </newVersion>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bump-minor</id>
+            <activation>
+                <property>
+                    <name>bumpMinor</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <newVersion>${parsedVersion.majorVersion}.${parsedVersion.nextMinorVersion}.0
+                                    </newVersion>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>bump-major</id>
+            <activation>
+                <property>
+                    <name>bumpMajor</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>set</goal>
+                                </goals>
+                                <phase>validate</phase>
+                                <configuration>
+                                    <newVersion>${parsedVersion.nextMajorVersion}.0.0</newVersion>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
